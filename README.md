@@ -166,3 +166,165 @@ Shutdown: 17:00
 ```
 
 Modify the scripts if different hours are required.
+
+
+# If You Do Not Have Administrator Privileges
+
+TimeGuard requires administrator privileges for a true system-level shutdown service because it needs permission to:
+
+* Start automatically after boot
+* Run in the background
+* Shut down the computer without user interaction
+
+If you cannot get administrator access, use the user-level installation options below.
+
+---
+
+# Windows (No Administrator Access)
+
+## Limitations
+
+Without admin rights:
+
+* The script can only run after user login
+* It cannot guarantee shutdown if the user disables it
+* It cannot create a system startup task
+
+---
+
+## Setup
+
+### 1. Store Script Locally
+
+Create a folder:
+
+```text
+%USERPROFILE%\TimeGuard
+```
+
+Place:
+
+```text
+TimeGuard.ps1
+```
+
+inside this folder.
+
+---
+
+### 2. Create Startup Entry
+
+Press:
+
+```
+Win + R
+```
+
+Open:
+
+```text
+shell:startup
+```
+
+Create a file:
+
+```text
+Start-TimeGuard.bat
+```
+
+with:
+
+```bat
+powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File "%USERPROFILE%\TimeGuard\TimeGuard.ps1"
+```
+
+---
+
+### 3. Test
+
+Double-click:
+
+```text
+Start-TimeGuard.bat
+```
+
+The script will run automatically after login.
+
+---
+
+# macOS (No Administrator Access)
+
+## Limitations
+
+Without admin rights:
+
+* Cannot create a LaunchDaemon
+* Runs only after user login
+* User can remove the startup item
+
+---
+
+## Setup
+
+### 1. Store Script
+
+Create:
+
+```bash
+mkdir -p ~/TimeGuard
+```
+
+Place:
+
+```bash
+~/TimeGuard/timeguard.sh
+```
+
+Make executable:
+
+```bash
+chmod +x ~/TimeGuard/timeguard.sh
+```
+
+---
+
+### 2. Create Login Item
+
+Open:
+
+```
+System Settings
+→ General
+→ Login Items
+→ Open at Login
+→ Add
+```
+
+Add:
+
+```bash
+~/TimeGuard/timeguard.sh
+```
+
+---
+
+### 3. Test
+
+Run:
+
+```bash
+~/TimeGuard/timeguard.sh
+```
+
+---
+
+# Recommended Approach
+
+| Access Level            | Windows                         | macOS                   |
+| ----------------------- | ------------------------------- | ----------------------- |
+| Administrator available | Use system service installation | Use LaunchDaemon        |
+| No administrator        | Use startup folder              | Use Login Items         |
+| Shared/company computer | Request IT installation         | Request IT installation |
+
+For a personal productivity computer, the user-level setup is usually sufficient. For enforcing policies on managed devices, administrator installation is required.
+
